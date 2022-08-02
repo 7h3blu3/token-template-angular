@@ -1,0 +1,23 @@
+mat-form-field {
+    width: 100%;
+}
+
+mat-spinner {
+    margin:auto;
+}
+
+.primary {
+    background-color: var(--clr-primary);
+    color: #fff;
+}
+
+.card-container{
+    display: flex;
+    justify-content: center;
+    padding: 2em;
+    flex-direction: row;
+}
+
+mat-card {
+    width: 30%;
+  }

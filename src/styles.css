@@ -1,1 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+    --clr-text: #3d3d3d;
+    --clr-primary: #067E0A;
+    --clr-primary-dark: #125814;
+    --clr-accent: #d8774a;
+    --clr-accent-dark: #a33f11;
+
+    /* --ff-title: "Garamond", sans-serif;
+    --ff-serif:"Crimson Text", serif;
+    --ff-logo: "Lucida Handwriting", sans-serif; */
+}
+
+.primary {
+    background-color: var(--clr-primary);
+}
+
+.accent {
+    color: var(--clr-accent);
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
