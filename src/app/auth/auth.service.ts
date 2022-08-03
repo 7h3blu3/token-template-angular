@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 
 import { AuthData } from './auth-data.model';
 import { environment } from 'src/environments/environment';
+import Swal from 'sweetalert2';
 
 const BACKEND_URL = environment.apiUrl + '/';
 
@@ -39,16 +40,36 @@ export class AuthService {
   }
 
   createUser(email: string, password: string) {
+    Swal.fire({
+      title: 'Creating user with ' + email + ' address...',
+      text: 'Please wait a few seconds.',
+      allowOutsideClick: false,
+    });
+    Swal.showLoading();
     const authData: AuthData = { email: email, password: password };
     return this.http
       .post(BACKEND_URL + 'signup', authData).subscribe((response) => {
         this.router.navigate(['/auth/login']);
+        Swal.fire({
+          title: 'User created',
+          icon: 'success',
+          html: 'User <strong>' + email + '</strong> was created.',
+          confirmButtonColor:'#3F51B5',
+          allowOutsideClick: false,
+        });  
       }, error => {
         this.authStatusListener.next(false)
+        this.errorMessageAlert(error);
       });
   }
 
   login(email: string, password: string) {
+    Swal.fire({
+      title: 'Logging... ',
+      text: 'Please wait a few seconds.',
+      allowOutsideClick: false,
+    });
+    Swal.showLoading();
     const authData: AuthData = { email: email, password: password };
     this.http
       .post<{ token: string, expiresIn: number, userId:string }>(BACKEND_URL + 'login', authData)
@@ -67,8 +88,15 @@ export class AuthService {
           this.saveAuthData(token, expirationDate, this.userId)
           this.router.navigate(['/']);
         }
+        Swal.fire({
+          title: 'Welcome!',
+          icon: 'success',
+          confirmButtonColor:'#3F51B5',
+          allowOutsideClick: false,
+        });  
       }, error => {
         this.authStatusListener.next(false)
+        this.errorMessageAlert(error);
       });
   }
 
@@ -130,4 +158,15 @@ export class AuthService {
           userId: userId
       }
   }
+
+  errorMessageAlert(error) {
+    Swal.fire({
+      title: 'An error has occurred',
+      icon: 'error',
+      html: 'Error message: <strong>' + error.error.message + '</strong>',
+      confirmButtonColor:'#3F51B5',
+      allowOutsideClick: false,
+    });  
+  }
+
 }
