@@ -18,6 +18,7 @@ export class AuthService {
   private tokenTimer: any;
   private userId: any;
   private authStatusListener = new Subject<boolean>();
+  private alertsKeyword: string;
 
   constructor(private http: HttpClient, private router: Router) {
     
@@ -40,23 +41,13 @@ export class AuthService {
   }
 
   createUser(email: string, password: string) {
-    Swal.fire({
-      title: 'Creating user with ' + email + ' address...',
-      text: 'Please wait a few seconds.',
-      allowOutsideClick: false,
-    });
-    Swal.showLoading();
+    this.alertsKeyword = 'signup';
+    this.loadingAlert(this.alertsKeyword, email)
     const authData: AuthData = { email: email, password: password };
     return this.http
       .post(BACKEND_URL + 'signup', authData).subscribe((response) => {
         this.router.navigate(['/auth/login']);
-        Swal.fire({
-          title: 'User created',
-          icon: 'success',
-          html: 'User <strong>' + email + '</strong> was created.',
-          confirmButtonColor:'#3F51B5',
-          allowOutsideClick: false,
-        });  
+        this.successAlert(this.alertsKeyword, email);
       }, error => {
         this.authStatusListener.next(false)
         this.errorMessageAlert(error);
@@ -64,12 +55,8 @@ export class AuthService {
   }
 
   login(email: string, password: string) {
-    Swal.fire({
-      title: 'Logging... ',
-      text: 'Please wait a few seconds.',
-      allowOutsideClick: false,
-    });
-    Swal.showLoading();
+    this.alertsKeyword = 'login';
+    this.loadingAlert(this.alertsKeyword, email)
     const authData: AuthData = { email: email, password: password };
     this.http
       .post<{ token: string, expiresIn: number, userId:string }>(BACKEND_URL + 'login', authData)
@@ -88,12 +75,7 @@ export class AuthService {
           this.saveAuthData(token, expirationDate, this.userId)
           this.router.navigate(['/']);
         }
-        Swal.fire({
-          title: 'Welcome!',
-          icon: 'success',
-          confirmButtonColor:'#3F51B5',
-          allowOutsideClick: false,
-        });  
+        this.successAlert(this.alertsKeyword, email);
       }, error => {
         this.authStatusListener.next(false)
         this.errorMessageAlert(error);
@@ -164,6 +146,48 @@ export class AuthService {
       title: 'An error has occurred',
       icon: 'error',
       html: 'Error message: <strong>' + error.error.message + '</strong>',
+      confirmButtonColor:'#3F51B5',
+      allowOutsideClick: false,
+    });  
+  }
+
+  loadingAlert(alertsKeyword, email) {
+    let title, text;
+    if(alertsKeyword === 'login') {
+      title = 'Logging... ';
+      text = 'Please wait a few seconds.'
+    } else if (alertsKeyword === 'signup') { 
+      title = 'Creating user with ' + email + ' address...';
+      text = 'Please wait a few seconds.'
+    };
+    Swal.fire({
+      title: title,
+      text: text,
+      allowOutsideClick: false,
+    });
+    Swal.showLoading();
+
+  }
+
+  successAlert(alertsKeyword, email) {
+    let title, html;
+    if(alertsKeyword === 'login') {
+      title = 'Welcome!';
+      html = '';
+    } else if (alertsKeyword === 'signup') {
+      title = 'User created';
+      html = 'User <strong>' + email + '</strong> was created.';
+    }
+    Swal.fire({
+      title: title,
+      icon: 'success',
+      confirmButtonColor:'#3F51B5',
+      allowOutsideClick: false,
+    });  
+    Swal.fire({
+      title: title,
+      icon: 'success',
+      html: html,
       confirmButtonColor:'#3F51B5',
       allowOutsideClick: false,
     });  
