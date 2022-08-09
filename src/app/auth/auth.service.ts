@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { map, catchError } from "rxjs/operators";
 
 import { AuthData } from './auth-data.model';
 import { environment } from 'src/environments/environment';
@@ -64,6 +65,7 @@ export class AuthService {
         console.log("token response ", response)
         const token = response.token;
         this.token = token;
+        console.log("token ", this.token)
         if (token) {
           const expiresInDuration = response.expiresIn;
           this.setAuthTimer(expiresInDuration)
@@ -112,6 +114,7 @@ export class AuthService {
     console.log("setting timer: " + duration)
     this.tokenTimer = setTimeout(() => {
         this.logout();
+        this.sessionExpiredAlert();
     }, duration * 1000);
   }
 
@@ -167,6 +170,16 @@ export class AuthService {
     });
     Swal.showLoading();
 
+  }
+
+  sessionExpiredAlert() {
+    Swal.fire({
+      title: "Your session has expired",
+      icon: 'info',
+      html: "Please log in again to continue",
+      confirmButtonColor:'#3F51B5',
+      allowOutsideClick: false,
+    });  
   }
 
   successAlert(alertsKeyword, email) {
