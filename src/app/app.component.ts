@@ -12,6 +12,7 @@ export class AppComponent {
   constructor(private authService: AuthService) {}
   
   ngOnInit() {
+     //This is needed so we do not lose our authentication on refresh
     this.authService.autoAuthUser();
   }
 }

@@ -84,6 +84,7 @@ export class AuthService {
       });
   }
 
+   //This is needed so we do not lose our authentication on refresh
   autoAuthUser() {
     const authInformation = this.getAuthData();
     if (!authInformation) {
