@@ -17,17 +17,19 @@ export class HomePageComponent implements OnInit, OnDestroy {
     this.userId = this.authService.getUserId();
     this.userIsAuthenticated = this.authService.getIsAuth();
 
-    this.authStatusSub = this.authService
-      .getAuthStatusListener()
-      .subscribe((isAuthenticated) => {
-        console.log("isAuthenticated ", isAuthenticated)
-        this.userIsAuthenticated = isAuthenticated;
-        this.userId = this.authService.getUserId();
-        console.log("userIsAuthenticated ", this.userIsAuthenticated)
-        console.log("userId ", this.userId)
-
-      });
+    console.log("userId ", this.userId)
+    this.setAuthentication();
   }
+
+  setAuthentication() {
+    this.authStatusSub = this.authService.getAuthStatusListener().subscribe((isAuthenticated) => {
+      this.userIsAuthenticated = isAuthenticated;
+      this.userId = this.authService.getUserId();
+      console.log("userId ", this.userId)
+
+    });
+  }
+
   ngOnDestroy() {
     this.authStatusSub.unsubscribe();
   }
