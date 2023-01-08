@@ -21,3 +21,7 @@ mat-spinner {
 mat-card {
     width: 30%;
   }
+
+.button-shadow {
+    box-shadow: inset 0px 2px 0 #06860b, 0px 2px 0 #057009;
+}
