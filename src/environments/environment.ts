@@ -7,5 +7,4 @@ export const environment = {
   // apiUrl: "http://localhost:3000"
   // apiUrl: 'https://nodejs-md--assessment-backend.herokuapp.com'
   apiUrl: "https://crimson-phantom-sidecar.glitch.me"
-  
 };

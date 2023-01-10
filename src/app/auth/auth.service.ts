@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, Subject } from 'rxjs';
+import { throwError as observableThrowError, Observable, Subject } from "rxjs";
 import { map, catchError } from "rxjs/operators";
 
 import { AuthData } from './auth-data.model';
@@ -84,6 +84,34 @@ export class AuthService {
       });
   }
 
+  resetPassword(email, domain){
+    let data = {
+      env:domain,
+      email: email
+    }
+    return this.http
+    .post(BACKEND_URL + 'reset-password', data).subscribe((response) => {
+      this.router.navigate(['/auth/login']);
+      Swal.fire({
+        title: "Email sent successfully.",
+        html:"Please check the mailbox of <strong>" + email +"</strong>.",
+        icon: 'success',
+        confirmButtonColor:'#3F51B5',
+        allowOutsideClick: false,
+      }); 
+    }, error => {
+      this.errorMessageAlert(error);
+    });
+  }
+  
+  getNewPasswordTokenData(token): Observable<any> {
+    return this.http.get(environment.apiUrl +"/new-password/"+ token).pipe(map(res => { return res }))
+  }
+
+  postNewPassword(data): Observable<any> {
+    return this.http.post<any>(environment.apiUrl + '/new-password', data).pipe(map(res => {return res}),catchError(err => this.handleError(err)))
+}
+  
    //This is needed so we do not lose our authentication on refresh
   autoAuthUser() {
     const authInformation = this.getAuthData();
@@ -147,9 +175,9 @@ export class AuthService {
 
   errorMessageAlert(error) {
     Swal.fire({
-      title: 'An error has occurred',
+      title: 'An error has occurred.',
       icon: 'error',
-      html: 'Error message: <strong>' + error.error.message + '</strong>',
+      html: '<strong>' + error.error.message + '</strong>',
       confirmButtonColor:'#3F51B5',
       allowOutsideClick: false,
     });  
@@ -205,6 +233,21 @@ export class AuthService {
       confirmButtonColor:'#3F51B5',
       allowOutsideClick: false,
     });  
+  }
+  public handleError(error: Response | any) {
+    let errMsg = error.error.message
+    console.log("error ", error)
+    Swal.fire({
+      title:"There was an error.",
+      icon: 'error',
+      text:  errMsg,
+      allowOutsideClick: false,
+      showConfirmButton: true,
+      confirmButtonColor: 'blue'
+    })
+    this.router.navigate(['/auth/login']);
+
+    return observableThrowError(errMsg);
   }
 
 }
