@@ -1,7 +1,19 @@
+.card-container{
+    display: flex;
+    justify-content: center;
+    padding: 2em;
+    flex-direction: row;
+}
+
+mat-card {
+    width: max(30%, 467px);
+}
+
 mat-form-field {
     width: 100%;
 }
 
+/* Spinner */
 mat-spinner {
     margin:auto;
 }
@@ -11,16 +23,9 @@ mat-spinner {
     color: #fff;
 }
 
-.card-container{
-    display: flex;
-    justify-content: center;
-    padding: 2em;
-    flex-direction: row;
+button {
+    width: 100%;
 }
-
-mat-card {
-    width: 30%;
-  }
 
 .button-shadow {
     box-shadow: inset 0px 2px 0 #06860b, 0px 2px 0 #057009;
@@ -36,4 +41,13 @@ a {
     text-decoration: none;
     color:black;
     opacity: 0.8;
+}
+
+@media (max-width: 867px) {
+    .mat-card:not([class*=mat-elevation-z]) {
+        box-shadow:0px 0px 0px;
+    }
+    .card-container{
+        padding: 2em 0;
+    }
 }
