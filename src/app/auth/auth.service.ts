@@ -60,7 +60,7 @@ export class AuthService {
     this.loadingAlert(this.alertsKeyword, email)
     const authData: AuthData = { email: email, password: password };
     this.http
-      .post<{ token: string, expiresIn: number, userId:string }>(BACKEND_URL + 'login', authData)
+      .post<{ token: string, expiresIn: number, userId:string, role:string }>(BACKEND_URL + 'login', authData)
       .subscribe((response) => {
         console.log("token response ", response)
         const token = response.token;
@@ -75,7 +75,8 @@ export class AuthService {
           const now = new Date();
           const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
           this.saveAuthData(token, expirationDate, this.userId)
-          this.router.navigate(['/']);
+          if(response.role !== 'worker' && response.role !== 'admin') this.router.navigate(['/']);
+          if(response.role === 'worker') this.router.navigate(['/dashboard']);
         }
         this.successAlert(this.alertsKeyword, email);
       }, error => {
